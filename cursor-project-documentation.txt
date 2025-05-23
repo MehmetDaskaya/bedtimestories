@@ -1,0 +1,62 @@
+BedTimeStories Project Documentation
+Overview
+BedTimeStories is a React Native application for reading, creating, and managing children's stories. It features user authentication, a story library, story creation, and user profile management. The app uses React Navigation for navigation, React Native Paper for UI components, and (optionally) Firebase for authentication and data storage.
+Project Structure
+.
+├── App.tsx                # Main app entry, providers, navigation
+├── index.ts               # Entry point for React Native
+├── package.json           # Project dependencies and scripts
+├── src/
+│   ├── components/        # Reusable UI components
+│   ├── config/            # Configuration files (e.g., Firebase)
+│   ├── context/           # React Contexts (e.g., Auth)
+│   ├── data/              # Static or seed data
+│   ├── navigation/        # Navigation components and types
+│   ├── screens/           # App screens (pages)
+│   │   └── Authentication/ # Auth-related screens
+│   ├── services/          # Business logic, API calls (currently empty)
+│   ├── styles/            # Shared/global styles (currently empty)
+│   └── types/             # TypeScript types and declarations
+├── assets/                # Images, fonts, etc.
+
+Main App Flow
+App.tsx wraps the app in providers (PaperProvider, SafeAreaProvider, AuthProvider) and sets up navigation.
+Navigation is handled via a Drawer for main app screens and a Stack for authentication screens.
+Authentication is managed via a custom AuthContext (with optional Firebase integration).
+
+Navigation
+DrawerNavigator: Main app navigation (Home, Library, Create, Profile, Settings, StoryPage).
+AuthStackNavigator: Authentication flow (SignIn, SignUp, ForgotPassword).
+CustomDrawer: Custom drawer UI.
+
+Screens
+HomeScreen: Main landing page after login.
+LibraryScreen: Browse and search stories.
+CreateStoryScreen: Create a new story.
+StoryPageScreen: Read a selected story.
+ProfileScreen: User profile and settings.
+SettingsScreen: App settings.
+Authentication Screens: SignIn, SignUp, ForgotPassword.
+
+Components
+AppHeader: Top navigation/header bar.
+Categories: Story categories UI.
+FeaturedStories: Carousel or list of featured stories.
+PlayBackControls: Audio playback controls.
+StoryCard: Card UI for a story.
+StoryCarousel: Carousel for stories.
+
+Context
+AuthContext: Provides authentication state and methods (sign in, sign out, etc.) to the app.
+
+Data
+data.json: Static or sample story data.
+
+Authentication
+Firebase is no longer used.
+Auth state is managed in AuthContext.
+Auth screens use context methods for sign in, sign up, and password reset.
+
+Styling
+Uses React Native Paper for UI components.
+Custom styles are defined in each component or screen
