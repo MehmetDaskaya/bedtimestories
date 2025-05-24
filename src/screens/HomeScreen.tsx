@@ -9,14 +9,16 @@ import {
   ImageBackground,
 } from "react-native";
 import {
-  Button,
   IconButton,
   Title,
   Paragraph,
   Provider as PaperProvider,
   DefaultTheme,
+  Portal,
+  Modal,
 } from "react-native-paper";
-import { TouchableWithoutFeedback } from "react-native";
+
+import { Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import AppHeader from "../components/AppHeader";
@@ -68,16 +70,20 @@ const formatNumber = (num: number): string => {
 interface BookItemProps {
   item: Story;
   isFavorited: boolean;
+  isSaved: boolean;
   onToggleFavorite: (id: string) => void;
-  onPressOpen: (book: Story) => void; // renamed here
+  onToggleSave: (id: string) => void;
+  onPressOpen: (book: Story) => void;
 }
 
 // Book Item Component
 const BookItem: React.FC<BookItemProps> = ({
   item,
   isFavorited,
+  isSaved,
   onToggleFavorite,
-  onPressOpen, // renamed here
+  onToggleSave,
+  onPressOpen,
 }) => {
   const insets = useSafeAreaInsets();
 
@@ -131,97 +137,111 @@ const BookItem: React.FC<BookItemProps> = ({
   };
 
   const handlePress = () => {
-    onPressOpen(item); // renamed call
+    onPressOpen(item);
   };
   return (
-    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-      <ImageBackground
-        source={{ uri: item.coverImage }}
-        style={styles.bookContainer}
-      >
-        <TouchableWithoutFeedback
-          onPressIn={handlePressIn}
-          onPressOut={handlePressOut}
-          onPress={handlePress}
+    <Pressable
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+      onPress={handlePress}
+    >
+      <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+        <ImageBackground
+          source={{ uri: item.coverImage }}
+          style={styles.bookContainer}
         >
-          <View style={styles.touchableOverlay} />
-        </TouchableWithoutFeedback>
-        <View style={styles.overlay} />
-        <View
-          style={[
-            styles.bookContentContainer,
-            { paddingBottom: insets.bottom + 10 },
-          ]}
-        >
-          {/* Left side: Book cover and details */}
-          <View style={styles.bookMainContent}>
-            <View style={styles.badgeWrapper}>
-              <View style={styles.badgeContainer}>
-                <View style={styles.durationBadge}>
-                  <Ionicons name="time-outline" size={14} color="white" />
-                  <Text style={styles.durationText}>{item.duration}</Text>
+          <Pressable
+            onPressIn={handlePressIn}
+            onPressOut={handlePressOut}
+            onPress={handlePress}
+            style={styles.touchableFullArea}
+          />
+          <View style={styles.overlay} />
+          <View
+            style={[
+              styles.bookContentContainer,
+              { paddingBottom: insets.bottom + 10 },
+            ]}
+          >
+            {/* Left side: Book cover and details */}
+            <View style={styles.bookMainContent}>
+              <View style={styles.badgeWrapper}>
+                <View style={styles.badgeContainer}>
+                  <View style={styles.durationBadge}>
+                    <Ionicons name="time-outline" size={14} color="white" />
+                    <Text style={styles.durationText}>{item.duration}</Text>
+                  </View>
+                  <View style={styles.ageBadge}>
+                    <Text style={styles.ageText}>
+                      For {item.ageRange} Year Olds
+                    </Text>
+                  </View>
                 </View>
-                <View style={styles.ageBadge}>
-                  <Text style={styles.ageText}>
-                    For {item.ageRange} Year Olds
+
+                {/* Page count below badges */}
+                <View style={styles.pageBadge}>
+                  <Ionicons name="book-outline" size={16} color="#FFFFFF" />
+                  <Text style={styles.pageText}>{item.pages.length} pages</Text>
+                </View>
+                {/* Categories */}
+                <View style={styles.pageBadge}>
+                  <Ionicons name="pricetag-outline" size={16} color="#FFFFFF" />
+                  <Text style={styles.pageText}>
+                    {item.categories.join(", ")}
                   </Text>
                 </View>
               </View>
 
-              {/* Page count below badges */}
-              <View style={styles.pageBadge}>
-                <Ionicons name="book-outline" size={16} color="#FFFFFF" />
-                <Text style={styles.pageText}>{item.pages.length} pages</Text>
-              </View>
-              {/* Categories */}
-              <View style={styles.pageBadge}>
-                <Ionicons name="pricetag-outline" size={16} color="#FFFFFF" />
-                <Text style={styles.pageText}>
-                  {item.categories.join(", ")}
+              <View style={styles.bookDetails}>
+                <Title style={styles.bookTitle}>{item.title}</Title>
+                <Paragraph style={styles.bookAuthor}>
+                  By {item.author}
+                </Paragraph>
+                <Text style={styles.bookDescription} numberOfLines={2}>
+                  {item.description}
                 </Text>
+
+                <View style={styles.statsContainer}>
+                  {renderStars(item.rating)}
+                  <View style={styles.readStats}>
+                    <Ionicons name="eye-outline" size={16} color="#666" />
+                    <Text style={styles.statsText}>
+                      {formatNumber(item.reads)} reads
+                    </Text>
+                  </View>
+                </View>
               </View>
             </View>
 
-            <View style={styles.bookDetails}>
-              <Title style={styles.bookTitle}>{item.title}</Title>
-              <Paragraph style={styles.bookAuthor}>By {item.author}</Paragraph>
-              <Text style={styles.bookDescription} numberOfLines={2}>
-                {item.description}
+            {/* Right side: Interaction buttons */}
+            <View style={styles.interactionContainer}>
+              <IconButton
+                icon={isFavorited ? "heart" : "heart-outline"}
+                iconColor={isFavorited ? theme.colors.primary : "#D3D3D3"}
+                size={32}
+                onPress={() => onToggleFavorite(item.id)}
+              />
+              <Text style={styles.interactionText}>
+                {isFavorited ? "Favorite!" : item.likes + " Likes"}
               </Text>
 
-              <View style={styles.statsContainer}>
-                {renderStars(item.rating)}
-                <View style={styles.readStats}>
-                  <Ionicons name="eye-outline" size={16} color="#666" />
-                  <Text style={styles.statsText}>
-                    {formatNumber(item.reads)} reads
-                  </Text>
-                </View>
-              </View>
+              <IconButton icon="share-variant" iconColor="#D3D3D3" size={32} />
+              <Text style={styles.interactionText}>Share</Text>
+
+              <IconButton
+                icon={isSaved ? "bookmark" : "bookmark-outline"}
+                iconColor={isSaved ? theme.colors.primary : "#D3D3D3"}
+                size={32}
+                onPress={() => onToggleSave(item.id)}
+              />
+              <Text style={styles.interactionText}>
+                {isSaved ? "Saved!" : "Save"}
+              </Text>
             </View>
           </View>
-
-          {/* Right side: Interaction buttons */}
-          <View style={styles.interactionContainer}>
-            <IconButton
-              icon={isFavorited ? "heart" : "heart-outline"}
-              iconColor={isFavorited ? theme.colors.primary : "#D3D3D3"}
-              size={32}
-              onPress={() => onToggleFavorite(item.id)}
-            />
-            <Text style={styles.interactionText}>
-              {isFavorited ? "Favorite!" : item.likes + " Likes"}
-            </Text>
-
-            <IconButton icon="share-variant" iconColor="#D3D3D3" size={32} />
-            <Text style={styles.interactionText}>Share</Text>
-
-            <IconButton icon="bookmark-outline" iconColor="#D3D3D3" size={32} />
-            <Text style={styles.interactionText}>Save</Text>
-          </View>
-        </View>
-      </ImageBackground>
-    </Animated.View>
+        </ImageBackground>
+      </Animated.View>
+    </Pressable>
   );
 };
 
@@ -257,6 +277,8 @@ export default function HomeScreen({
 }: HomeScreenProps): React.ReactElement {
   const [stories, setStories] = useState<Story[]>([]);
   const [favorites, setFavorites] = useState<Record<string, boolean>>({});
+  const [saved, setSaved] = useState<Record<string, boolean>>({});
+  const [showModal, setShowModal] = useState(false);
 
   // Flat list reference to scroll programmatically
   const flatListRef = useRef<FlatList<Story>>(null);
@@ -281,21 +303,68 @@ export default function HomeScreen({
     }));
   };
 
+  const handleToggleSave = (bookId: string) => {
+    setSaved((prev) => ({
+      ...prev,
+      [bookId]: !prev[bookId],
+    }));
+  };
+
   // Render each book item
   const renderItem = ({ item }: { item: Story }) => (
     <BookItem
       item={item}
       isFavorited={favorites[item.id] || false}
+      isSaved={saved[item.id] || false}
       onToggleFavorite={handleToggleFavorite}
-      onPressOpen={handlePressOpen} // renamed prop
+      onToggleSave={handleToggleSave}
+      onPressOpen={handlePressOpen}
     />
   );
 
   return (
     <PaperProvider theme={theme}>
-      <AppHeader title="Storybook" />
+      <AppHeader
+        title="Bedtime Stories"
+        onBookmarkPress={() => setShowModal(true)}
+      />
 
       <View style={styles.container}>
+        <Portal>
+          <Modal
+            visible={showModal}
+            onDismiss={() => setShowModal(false)}
+            contentContainerStyle={{
+              margin: 20,
+              backgroundColor: "white",
+              borderRadius: 10,
+              padding: 15,
+            }}
+          >
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginBottom: 10,
+              }}
+            >
+              <Text style={{ fontSize: 18, fontWeight: "bold" }}>
+                Saved Stories
+              </Text>
+              <IconButton icon="close" onPress={() => setShowModal(false)} />
+            </View>
+            <FlatList
+              data={stories.filter((story) => saved[story.id])}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => (
+                <View style={{ marginBottom: 10 }}>
+                  <Text style={{ fontSize: 16 }}>{item.title}</Text>
+                  <Text style={{ color: "#888" }}>By {item.author}</Text>
+                </View>
+              )}
+            />
+          </Modal>
+        </Portal>
         <FlatList
           ref={flatListRef}
           data={stories}
@@ -315,14 +384,14 @@ export default function HomeScreen({
 }
 
 const styles = StyleSheet.create({
-  touchableOverlay: {
+  touchableFullArea: {
     position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
-    zIndex: 1,
   },
+
   storyItem: { marginBottom: 10 },
   overlay: {
     position: "absolute",

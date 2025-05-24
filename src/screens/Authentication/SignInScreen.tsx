@@ -36,19 +36,8 @@ const SignInScreen: React.FC<Props> = ({ navigation }) => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={styles.container}
     >
-      <Button
-        mode="outlined"
-        onPress={() => {
-          setEmail("mehmettaskaya16@gmail.com");
-          setPassword("123456md");
-        }}
-        style={styles.button}
-      >
-        Fill Test Credentials
-      </Button>
-
       <Appbar.Header>
-        <Appbar.Content title="Storybook Login" />
+        <Appbar.Content title="Login to Bedtime Stories" />
       </Appbar.Header>
 
       <View style={styles.form}>
@@ -71,6 +60,17 @@ const SignInScreen: React.FC<Props> = ({ navigation }) => {
         />
 
         {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+        <Button
+          mode="outlined"
+          onPress={() => {
+            setEmail("mehmettaskaya16@gmail.com");
+            setPassword("123456md");
+          }}
+          style={styles.button}
+        >
+          Fill Test Credentials
+        </Button>
 
         <Button
           mode="contained"

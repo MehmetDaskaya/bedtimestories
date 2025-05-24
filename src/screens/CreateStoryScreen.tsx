@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Alert,
   Dimensions,
-  Modal,
 } from "react-native";
 import {
   TextInput,
@@ -22,6 +21,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { MaterialCommunityIcons } from "@expo/vector-icons";
 import type { MainScreenProps } from "../navigation/types";
+import AppHeader from "../components/AppHeader";
 
 const { width } = Dimensions.get("window");
 
@@ -243,7 +243,7 @@ export default function CreateStoryScreen({
 
   const renderMethodSelection = () => (
     <View style={styles.methodContainer}>
-      <Text style={styles.header}>Choose Your Creation Method</Text>
+      <AppHeader title="Create Story" />
       <View style={styles.methodGrid}>
         <TouchableOpacity
           style={[
@@ -343,7 +343,7 @@ export default function CreateStoryScreen({
 
   const renderStoryDetails = () => (
     <View style={styles.detailsContainer}>
-      <Text style={styles.header}>Story Details</Text>
+      <AppHeader title="Story Details" />
       {creationMethod === "ai" ? (
         renderAIPromptSection()
       ) : (
@@ -472,7 +472,6 @@ const styles = StyleSheet.create({
   },
   methodContainer: {
     flex: 1,
-    padding: 16,
   },
   methodGrid: {
     flexDirection: "row",
@@ -534,7 +533,6 @@ const styles = StyleSheet.create({
   },
   detailsContainer: {
     flex: 1,
-    padding: 16,
   },
   contentContainer: {
     flex: 1,

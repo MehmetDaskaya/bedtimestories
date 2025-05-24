@@ -332,23 +332,33 @@ export default function StoryPageScreen({
           style={styles.backgroundImage}
           resizeMode="cover"
         >
-          <View style={styles.modeSelectionContainer}>
-            <Button
-              mode="contained"
-              onPress={() => setMode("read")}
-              style={styles.selectButton}
-              labelStyle={{ fontSize: 18 }}
+          <View style={styles.modeSelectionOverlay}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
             >
-              📖 Read
-            </Button>
-            <Button
-              mode="outlined"
-              onPress={() => setMode("listen")}
-              style={styles.selectButton}
-              labelStyle={{ fontSize: 18 }}
-            >
-              🎧 Listen
-            </Button>
+              <Ionicons name="arrow-back" size={28} color="#fff" />
+            </TouchableOpacity>
+
+            <Text style={styles.bookTitle}>{storyData.title}</Text>
+
+            <View style={styles.modeButtonRow}>
+              <TouchableOpacity
+                onPress={() => setMode("read")}
+                style={styles.modeButton}
+              >
+                <Ionicons name="book" size={32} color="#fff" />
+                <Text style={styles.modeButtonText}>Read</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={() => setMode("listen")}
+                style={styles.modeButton}
+              >
+                <Ionicons name="headset" size={32} color="#fff" />
+                <Text style={styles.modeButtonText}>Listen</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ImageBackground>
       </SafeAreaView>
@@ -378,6 +388,21 @@ export default function StoryPageScreen({
             style={styles.backgroundImage}
             resizeMode="cover"
           >
+            <View style={styles.tapZones}>
+              <TouchableOpacity
+                style={styles.leftZone}
+                onPress={() => {
+                  if (!isFirstPage) animatePageTransition(currentPageIndex - 1);
+                }}
+              />
+              <TouchableOpacity
+                style={styles.rightZone}
+                onPress={() => {
+                  if (!isLastPage) animatePageTransition(currentPageIndex + 1);
+                }}
+              />
+            </View>
+
             {/* Header inside the image - with auto-hide */}
             <Animated.View
               style={[
@@ -509,6 +534,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 8, // Reduced height
     backgroundColor: "rgba(0,0,0,0.5)", // Semi-transparent dark background
+    zIndex: 2,
   },
   iconButton: {
     backgroundColor: "rgba(0,0,0,0.3)",
@@ -612,16 +638,72 @@ const styles = StyleSheet.create({
     color: "#FF0000",
   },
 
-  modeSelectionContainer: {
+  modeSelectionOverlay: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    marginBottom: -100,
     padding: 20,
   },
-  selectButton: {
-    marginVertical: 10,
-    width: "70%",
-    borderRadius: 20,
+
+  bookTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    color: "#fff",
+    marginBottom: 80,
+    textAlign: "center",
+  },
+
+  modeButtonRow: {
+    gap: 20,
+    marginBottom: 100,
+  },
+
+  modeButton: {
+    width: 200,
+    height: 200,
+    backgroundColor: "#FF4785",
+    borderRadius: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 4,
+  },
+
+  modeButtonText: {
+    color: "#fff",
+    fontSize: 24,
+    marginTop: 24,
+    fontWeight: "bold",
+  },
+  backButton: {
+    position: "absolute",
+    top: 20,
+    left: 20,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    padding: 10,
+    borderRadius: 50,
+    zIndex: 10,
+  },
+  tapZones: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    flexDirection: "row",
+    zIndex: 0,
+  },
+
+  leftZone: {
+    flex: 2,
+  },
+
+  rightZone: {
+    flex: 2,
+  },
+
+  middleZone: {
+    flex: 6,
   },
 });

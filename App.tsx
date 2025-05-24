@@ -1,5 +1,4 @@
-import React, { createElement, useEffect, useState } from "react";
-import { View, ActivityIndicator, StyleSheet } from "react-native";
+import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -21,7 +20,6 @@ import CustomDrawer from "./src/navigation/CustomDrawer";
 import { AuthStackParamList, MainStackParamList } from "./src/navigation/types";
 
 const Drawer = createDrawerNavigator<MainStackParamList>();
-const Stack = createNativeStackNavigator();
 
 function DrawerNavigator() {
   return (
@@ -49,6 +47,7 @@ function DrawerNavigator() {
       <Drawer.Screen
         name="StoryPage"
         component={StoryPageScreen}
+        options={{ title: "Continue Reading" }}
         initialParams={{ bookId: "", mode: "read" }} // Provide default params to avoid TypeScript errors
       />
     </Drawer.Navigator>
@@ -91,12 +90,3 @@ const App = () => (
 );
 
 export default gestureHandlerRootHOC(App);
-
-const styles = StyleSheet.create({
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#FFF8E1",
-  },
-});

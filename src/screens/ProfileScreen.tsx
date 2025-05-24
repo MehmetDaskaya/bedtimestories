@@ -4,7 +4,7 @@ import { List, Divider, Button, Avatar } from "react-native-paper";
 import AppHeader from "../components/AppHeader";
 
 export default function ProfileScreen() {
-  const [username, setUsername] = useState("Luna's Explorer");
+  const [username, setUsername] = useState("Mehmet Daşkaya");
   const [characterCreated, setCharacterCreated] = useState(true);
 
   return (

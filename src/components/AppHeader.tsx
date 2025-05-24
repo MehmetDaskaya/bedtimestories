@@ -7,9 +7,10 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 interface AppHeaderProps {
   title: string;
+  onBookmarkPress?: () => void;
 }
 
-export default function AppHeader({ title }: AppHeaderProps) {
+export default function AppHeader({ title, onBookmarkPress }: AppHeaderProps) {
   const navigation = useNavigation<DrawerNavigationProp<{}>>(); // ✅ Fix openDrawer issue
   const insets = useSafeAreaInsets();
   return (
@@ -24,7 +25,11 @@ export default function AppHeader({ title }: AppHeaderProps) {
       </TouchableOpacity>
 
       <Appbar.Content title={title} titleStyle={styles.headerTitle} />
-      <Appbar.Action icon="bell" style={styles.notificationIcon} />
+      <Appbar.Action
+        icon="bookmark"
+        style={styles.notificationIcon}
+        onPress={onBookmarkPress}
+      />
     </Appbar.Header>
   );
 }

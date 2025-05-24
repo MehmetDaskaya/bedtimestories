@@ -33,8 +33,8 @@ export default function CustomDrawer(props: any) {
             size={70}
             source={require("../../assets/avatar.webp")}
           />
-          <Text style={styles.username}>Luna’s Explorer</Text>
-          <Text style={styles.email}>luna@example.com</Text>
+          <Text style={styles.username}>Mehmet Daşkaya</Text>
+          <Text style={styles.email}>mehmettaskaya16@gmail.com</Text>
         </View>
       </ImageBackground>
 
